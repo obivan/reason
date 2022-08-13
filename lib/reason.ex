@@ -126,6 +126,19 @@ defmodule Reason do
     end
   end
 
+  @doc """
+  Define custom relation.
+  """
+  defmacro defrel(call, do: block) do
+    {fn_name, _, args} = call
+
+    quote do
+      def unquote(fn_name)(unquote_splicing(args)) do
+        fn subst -> Reason.conj([unquote(block)]).(subst) end
+      end
+    end
+  end
+
   # defp take_vars(stx) do
   #   case stx do
   #     {:_, _, _} -> []
