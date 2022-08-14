@@ -5,6 +5,8 @@ defmodule Reason do
 
   alias Reason.{Goal, Subst, Var}
 
+  defdelegate identical(g1, g2), to: Goal
+
   @doc """
   Compiles `disj(g1, g2, g3)` to `Goal.disj(Goal.disj(g1, g2), g3)`.
 

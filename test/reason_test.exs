@@ -6,7 +6,6 @@ defmodule ReasonTest do
   doctest Reason.Subst
   doctest Reason.Goal
 
-  import Reason.Goal, only: [identical: 2]
   import Reason
 
   defrel appendo(l, s, out) do
