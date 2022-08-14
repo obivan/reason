@@ -6,65 +6,69 @@ defmodule Reason do
   alias Reason.{Goal, Subst, Var}
 
   @doc """
-  Compiles `disj([g1, g2, g3])` to `Goal.disj(Goal.disj(g1, g2), g3)`.
+  Compiles `disj(g1, g2, g3)` to `Goal.disj(Goal.disj(g1, g2), g3)`.
 
   Example:
 
-      iex> ast = quote do: Reason.disj([g1, g2, g3])
+      iex> ast = quote do: Reason.disj(do: [g1, g2, g3])
       iex> ast |> Macro.expand(__ENV__) |> Macro.to_string()
       "Goal.disj(Goal.disj(g1, g2), g3)"
 
-      iex> ast = quote do: Reason.disj([g1])
+      iex> ast = quote do: Reason.disj(do: [g1])
       iex> ast |> Macro.expand(__ENV__) |> Macro.to_string()
       "g1"
 
       iex> alias Reason.{Subst, Var}
-      iex> g = Reason.disj([])
+      iex> g = Reason.disj(do: [])
       iex> x = Var.new()
       iex> s = Subst.put(Subst.new(), x, :olive)
       iex> assert g.(s) == []
 
   """
   # Enum.reduce([:g1, :g2, :g3], fn g, acc -> [acc | [g]] end)
-  defmacro disj([_ | _] = goals) when is_list(goals) do
-    Enum.reduce(goals, fn
-      g, acc -> quote do: Goal.disj(unquote(acc), unquote(g))
-    end)
+  defmacro disj(do: block) do
+    case take_goals(block) do
+      [] ->
+        quote(do: Goal.fail())
+
+      [_ | _] = goals ->
+        Enum.reduce(goals, fn
+          g, acc -> quote do: Goal.disj(unquote(acc), unquote(g))
+        end)
+    end
   end
 
-  defmacro disj([]), do: quote(do: Goal.fail())
-
-  defmacro disj(_goals), do: raise("goals must be a list")
-
   @doc """
-  Compiles `conj([g1, g2, g3])` to `Goal.conj(Goal.conj(g1, g2), g3)`.
+  Compiles `conj(g1, g2, g3)` to `Goal.conj(Goal.conj(g1, g2), g3)`.
 
   Example:
 
-      iex> ast = quote do: Reason.conj([g1, g2, g3])
+      iex> ast = quote do: Reason.conj(do: [g1, g2, g3])
       iex> ast |> Macro.expand(__ENV__) |> Macro.to_string()
       "Goal.conj(Goal.conj(g1, g2), g3)"
 
-      iex> ast = quote do: Reason.conj([g1])
+      iex> ast = quote do: Reason.conj(do: [g1])
       iex> ast |> Macro.expand(__ENV__) |> Macro.to_string()
       "g1"
 
       iex> alias Reason.{Subst, Var}
-      iex> g = Reason.conj([])
+      iex> g = Reason.conj(do: [])
       iex> x = Var.new()
       iex> s = Subst.put(Subst.new(), x, :olive)
       iex> assert g.(s) == [%{x => :olive}]
 
   """
-  defmacro conj([_ | _] = goals) when is_list(goals) do
-    Enum.reduce(goals, fn
-      g, acc -> quote do: Goal.conj(unquote(acc), unquote(g))
-    end)
+  defmacro conj(do: block) do
+    case take_goals(block) do
+      [] ->
+        quote(do: Goal.succeed())
+
+      [_ | _] = goals ->
+        Enum.reduce(goals, fn
+          g, acc -> quote do: Goal.conj(unquote(acc), unquote(g))
+        end)
+    end
   end
-
-  defmacro conj([]), do: quote(do: Goal.succeed())
-
-  defmacro conj(_goals), do: raise("goals must be a list")
 
   @doc """
   Introduce vars.
@@ -78,13 +82,13 @@ defmodule Reason do
       ...> end
 
   """
-  defmacro fresh(vars, do: goals) when is_list(vars) do
+  defmacro fresh(vars, do: block) when is_list(vars) do
     # vars = take_vars(vars)
-    goals = take_goals(goals)
+    goals = take_goals(block)
 
     quote do
       unquote_splicing(introduce_vars(vars))
-      Reason.conj([unquote_splicing(goals)])
+      Reason.conj(do: unquote(goals))
     end
   end
 
@@ -134,7 +138,7 @@ defmodule Reason do
 
     quote do
       def unquote(fn_name)(unquote_splicing(args)) do
-        fn subst -> Reason.conj([unquote(block)]).(subst) end
+        fn subst -> Reason.conj(do: unquote(block)).(subst) end
       end
     end
   end

@@ -9,34 +9,19 @@ defmodule ReasonTest do
   import Reason.Goal, only: [identical: 2]
   import Reason
 
-  # defp appendo(l, s, out) do
-  #   fn subst ->
-  #     Reason.disj([
-  #       Reason.conj([
-  #         Goal.identical(l, []),
-  #         Goal.identical(s, out)
-  #       ]),
-  #       Reason.fresh [a, d, res] do
-  #         Goal.identical([a | d], l)
-  #         Goal.identical([a | res], out)
-  #         appendo(d, s, res)
-  #       end
-  #     ]).(subst)
-  #   end
-  # end
-
   defrel appendo(l, s, out) do
-    disj([
-      conj([
-        identical(l, []),
+    disj do
+      conj do
+        identical(l, [])
         identical(s, out)
-      ]),
+      end
+
       fresh [a, d, res] do
         identical([a | d], l)
         identical([a | res], out)
         appendo(d, s, res)
       end
-    ])
+    end
   end
 
   test "appendo" do
@@ -90,26 +75,27 @@ defmodule ReasonTest do
     end
 
     defrel membero(x, l) do
-      disj([
-        hdo(l, x),
+      disj do
+        hdo(l, x)
+
         fresh [t] do
           tlo(l, t)
           membero(x, t)
         end
-      ])
+      end
     end
 
     defrel nth_houseo(n, street, house) do
       fresh [h1, h2, h3, h4, h5] do
         identical([:street, h1, h2, h3, h4, h5], street)
 
-        disj([
-          conj([identical(n, 1), identical(house, h1)]),
-          conj([identical(n, 2), identical(house, h2)]),
-          conj([identical(n, 3), identical(house, h3)]),
-          conj([identical(n, 4), identical(house, h4)]),
-          conj([identical(n, 5), identical(house, h5)])
-        ])
+        disj do
+          conj(do: [identical(n, 1), identical(house, h1)])
+          conj(do: [identical(n, 2), identical(house, h2)])
+          conj(do: [identical(n, 3), identical(house, h3)])
+          conj(do: [identical(n, 4), identical(house, h4)])
+          conj(do: [identical(n, 5), identical(house, h5)])
+        end
       end
     end
 
@@ -117,75 +103,75 @@ defmodule ReasonTest do
       fresh [h1, h2, h3, h4, h5] do
         identical([:street, h1, h2, h3, h4, h5], street)
 
-        disj([
-          conj([identical(h1, house_a), identical(h2, house_b)]),
-          conj([identical(h2, house_a), identical(h3, house_b)]),
-          conj([identical(h3, house_a), identical(h4, house_b)]),
-          conj([identical(h4, house_a), identical(h5, house_b)])
-        ])
+        disj do
+          conj(do: [identical(h1, house_a), identical(h2, house_b)])
+          conj(do: [identical(h2, house_a), identical(h3, house_b)])
+          conj(do: [identical(h3, house_a), identical(h4, house_b)])
+          conj(do: [identical(h4, house_a), identical(h5, house_b)])
+        end
       end
     end
 
     defrel next_to(x, y, l) do
-      disj([to_the_left_of(x, y, l), to_the_left_of(y, x, l)])
+      disj(do: [to_the_left_of(x, y, l), to_the_left_of(y, x, l)])
     end
 
     defrel solve(street) do
-      conj([
+      conj do
         # There are five houses
         fresh [h1, h2, h3, h4, h5] do
           identical([:street, h1, h2, h3, h4, h5], street)
-        end,
+        end
 
         # Brit lives in red house
         fresh [pet, beverage, sport] do
           membero([:house, :brit, :red, pet, beverage, sport], street)
-        end,
+        end
 
         # Swede keeps dogs
         fresh [color, beverage, sport] do
           membero([:house, :swede, color, :dogs, beverage, sport], street)
-        end,
+        end
 
         # Dane drinks tea
         fresh [color, pet, sport] do
           membero([:house, :dane, color, pet, :tea, sport], street)
-        end,
+        end
 
         # Green house owner drinks coffee
         fresh [nationality, pet, sport] do
           membero([:house, nationality, :green, pet, :coffee, sport], street)
-        end,
+        end
 
         # Polo player rears birds
         fresh [nationality, color, beverage] do
           membero([:house, nationality, color, :birds, beverage, :polo], street)
-        end,
+        end
 
         # Yellow house owner plays hockey
         fresh [nationality, pet, beverage] do
           membero([:house, nationality, :yellow, pet, beverage, :hockey], street)
-        end,
+        end
 
         # Billiad player drinks beer
         fresh [nationality, color, pet] do
           membero([:house, nationality, color, pet, :beer, :billiard], street)
-        end,
+        end
 
         # German plays soccer
         fresh [color, pet, beverage] do
           membero([:house, :german, color, pet, beverage, :soccer], street)
-        end,
+        end
 
         # Center house owner drinks milk
         fresh [nationality, color, pet, sport] do
           nth_houseo(3, street, [:house, nationality, color, pet, :milk, sport])
-        end,
+        end
 
         # Norvegian in first house
         fresh [color, pet, beverage, sport] do
           nth_houseo(1, street, [:house, :norvegian, color, pet, beverage, sport])
-        end,
+        end
 
         # Green house left of white house
         fresh [nationality1, pet1, beverage1, sport1, nationality2, pet2, beverage2, sport2] do
@@ -194,7 +180,7 @@ defmodule ReasonTest do
             [:house, nationality2, :white, pet2, beverage2, sport2],
             street
           )
-        end,
+        end
 
         # Baseball player lives next to cat owner
         fresh [nationality1, color1, pet1, beverage1, nationality2, color2, beverage2, sport2] do
@@ -203,7 +189,7 @@ defmodule ReasonTest do
             [:house, nationality2, color2, :cats, beverage2, sport2],
             street
           )
-        end,
+        end
 
         # Hockey player lives next to horse owner
         fresh [nationality1, color1, pet1, beverage1, nationality2, color2, beverage2, sport2] do
@@ -212,7 +198,7 @@ defmodule ReasonTest do
             [:house, nationality2, color2, :horses, beverage2, sport2],
             street
           )
-        end,
+        end
 
         # Norvegian lives next to blue house
         fresh [color1, pet1, beverage1, sport1, nationality2, pet2, beverage2, sport2] do
@@ -221,18 +207,18 @@ defmodule ReasonTest do
             [:house, nationality2, :blue, pet2, beverage2, sport2],
             street
           )
-        end,
+        end
 
         # Somebody owns the fish
         fresh [color, beverage, sport, nationality] do
           membero([:house, nationality, color, :fish, beverage, sport], street)
-        end,
+        end
 
         # Somebody drinks water
         fresh [nationality, color, pet, sport] do
           membero([:house, nationality, color, pet, :water, sport], street)
         end
-      ])
+      end
     end
   end
 
