@@ -9,17 +9,15 @@ defmodule ReasonTest do
   import Reason
 
   defrel appendo(l, s, out) do
-    disj do
-      conj do
+    conde do
+      _ ->
         identical(l, [])
         identical(s, out)
-      end
 
-      fresh [a, d, res] do
+      [a, d, res] ->
         identical([a | d], l)
         identical([a | res], out)
         appendo(d, s, res)
-      end
     end
   end
 
@@ -66,21 +64,21 @@ defmodule ReasonTest do
     # Who drinks water?
 
     defrel hdo(l, x) do
-      fresh([t], do: identical([x | t], l))
+      fresh(t, do: identical([x | t], l))
     end
 
     defrel tlo(l, x) do
-      fresh([h], do: identical([h | x], l))
+      fresh(h, do: identical([h | x], l))
     end
 
     defrel membero(x, l) do
-      disj do
-        hdo(l, x)
+      conde do
+        _ ->
+          hdo(l, x)
 
-        fresh [t] do
+        t ->
           tlo(l, t)
           membero(x, t)
-        end
       end
     end
 
@@ -88,12 +86,12 @@ defmodule ReasonTest do
       fresh [h1, h2, h3, h4, h5] do
         identical([:street, h1, h2, h3, h4, h5], street)
 
-        disj do
-          conj(do: [identical(n, 1), identical(house, h1)])
-          conj(do: [identical(n, 2), identical(house, h2)])
-          conj(do: [identical(n, 3), identical(house, h3)])
-          conj(do: [identical(n, 4), identical(house, h4)])
-          conj(do: [identical(n, 5), identical(house, h5)])
+        conde do
+          _ -> [identical(n, 1), identical(house, h1)]
+          _ -> [identical(n, 2), identical(house, h2)]
+          _ -> [identical(n, 3), identical(house, h3)]
+          _ -> [identical(n, 4), identical(house, h4)]
+          _ -> [identical(n, 5), identical(house, h5)]
         end
       end
     end
@@ -102,11 +100,11 @@ defmodule ReasonTest do
       fresh [h1, h2, h3, h4, h5] do
         identical([:street, h1, h2, h3, h4, h5], street)
 
-        disj do
-          conj(do: [identical(h1, house_a), identical(h2, house_b)])
-          conj(do: [identical(h2, house_a), identical(h3, house_b)])
-          conj(do: [identical(h3, house_a), identical(h4, house_b)])
-          conj(do: [identical(h4, house_a), identical(h5, house_b)])
+        conde do
+          _ -> [identical(h1, house_a), identical(h2, house_b)]
+          _ -> [identical(h2, house_a), identical(h3, house_b)]
+          _ -> [identical(h3, house_a), identical(h4, house_b)]
+          _ -> [identical(h4, house_a), identical(h5, house_b)]
         end
       end
     end

@@ -84,8 +84,8 @@ defmodule Reason do
       ...> end
 
   """
-  defmacro fresh(vars, do: block) when is_list(vars) do
-    # vars = take_vars(vars)
+  defmacro fresh(vars, do: block) do
+    vars = take_vars(vars)
     goals = take_goals(block)
 
     quote do
@@ -145,13 +145,29 @@ defmodule Reason do
     end
   end
 
-  # defp take_vars(stx) do
-  #   case stx do
-  #     {:_, _, _} -> []
-  #     {:{}, _, vars} -> vars
-  #     {var1, var2} -> [var1, var2]
-  #     {name, _, _} = var when is_atom(name) -> [var]
-  #     l when is_list(l) -> l
-  #   end
-  # end
+  @doc """
+  Sugar for disj(conj(g1, g2), conj(g3, g4))
+  """
+  defmacro conde(do: block) do
+    disjuncts =
+      for {:->, _, [vars, clauses]} <- block do
+        quote do
+          Reason.fresh(unquote(vars), do: unquote(clauses))
+        end
+      end
+
+    quote do
+      Reason.disj(do: unquote(disjuncts))
+    end
+  end
+
+  defp take_vars(stx) do
+    case stx do
+      {:_, _, _} -> []
+      # {:{}, _, vars} -> vars
+      # {var1, var2} -> [var1, var2]
+      {name, _, _} = var when is_atom(name) -> [var]
+      l when is_list(l) -> Enum.flat_map(l, &take_vars/1)
+    end
+  end
 end
