@@ -23,11 +23,8 @@ defmodule ReasonTest do
 
   test "appendo" do
     answer =
-      run false, q do
-        fresh [x, y] do
-          appendo(x, y, [:a, :b, :c])
-          identical(q, [x, y])
-        end
+      run [x, y] do
+        appendo(x, y, [:a, :b, :c])
       end
 
     assert answer == [

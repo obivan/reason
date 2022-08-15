@@ -112,9 +112,15 @@ defmodule Reason do
 
   defmacro run(n, v, do: block) do
     quote do
-      g = Reason.fresh([unquote(v)], do: unquote(block))
+      g = Reason.fresh(unquote(v), do: unquote(block))
       s = Goal.run_goal(g, unquote(n))
       Enum.map(s, Subst.reify(unquote(v)))
+    end
+  end
+
+  defmacro run(v, do: block) do
+    quote do
+      Reason.run(false, unquote(v), do: unquote(block))
     end
   end
 
