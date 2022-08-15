@@ -222,17 +222,16 @@ defmodule ReasonTest do
         ZebraPuzzle.solve(q)
       end
 
-    assert Enum.sort(answer) ==
-             Enum.sort([
-               [
-                 :street,
-                 [:house, :norvegian, :yellow, :cats, :water, :hockey],
-                 [:house, :dane, :blue, :horses, :tea, :baseball],
-                 [:house, :brit, :red, :birds, :milk, :polo],
-                 [:house, :german, :green, :fish, :coffee, :soccer],
-                 [:house, :swede, :white, :dogs, :beer, :billiard]
-               ]
-             ])
+    assert answer == [
+             [
+               :street,
+               [:house, :norvegian, :yellow, :cats, :water, :hockey],
+               [:house, :dane, :blue, :horses, :tea, :baseball],
+               [:house, :brit, :red, :birds, :milk, :polo],
+               [:house, :german, :green, :fish, :coffee, :soccer],
+               [:house, :swede, :white, :dogs, :beer, :billiard]
+             ]
+           ]
   end
 
   @tag :benchmark
