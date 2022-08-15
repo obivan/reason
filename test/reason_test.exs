@@ -118,13 +118,13 @@ defmodule ReasonTest do
         end
 
         # Brit lives in red house
-        fresh [pet, beverage, sport] do
-          membero([:house, :brit, :red, pet, beverage, sport], street)
+        fresh [pet, drink, sport] do
+          membero([:house, :brit, :red, pet, drink, sport], street)
         end
 
         # Swede keeps dogs
-        fresh [color, beverage, sport] do
-          membero([:house, :swede, color, :dogs, beverage, sport], street)
+        fresh [color, drink, sport] do
+          membero([:house, :swede, color, :dogs, drink, sport], street)
         end
 
         # Dane drinks tea
@@ -138,13 +138,13 @@ defmodule ReasonTest do
         end
 
         # Polo player rears birds
-        fresh [nationality, color, beverage] do
-          membero([:house, nationality, color, :birds, beverage, :polo], street)
+        fresh [nationality, color, drink] do
+          membero([:house, nationality, color, :birds, drink, :polo], street)
         end
 
         # Yellow house owner plays hockey
-        fresh [nationality, pet, beverage] do
-          membero([:house, nationality, :yellow, pet, beverage, :hockey], street)
+        fresh [nationality, pet, drink] do
+          membero([:house, nationality, :yellow, pet, drink, :hockey], street)
         end
 
         # Billiad player drinks beer
@@ -153,8 +153,8 @@ defmodule ReasonTest do
         end
 
         # German plays soccer
-        fresh [color, pet, beverage] do
-          membero([:house, :german, color, pet, beverage, :soccer], street)
+        fresh [color, pet, drink] do
+          membero([:house, :german, color, pet, drink, :soccer], street)
         end
 
         # Center house owner drinks milk
@@ -163,49 +163,49 @@ defmodule ReasonTest do
         end
 
         # Norvegian in first house
-        fresh [color, pet, beverage, sport] do
-          nth_houseo(1, street, [:house, :norvegian, color, pet, beverage, sport])
+        fresh [color, pet, drink, sport] do
+          nth_houseo(1, street, [:house, :norvegian, color, pet, drink, sport])
         end
 
         # Green house left of white house
-        fresh [nationality1, pet1, beverage1, sport1, nationality2, pet2, beverage2, sport2] do
+        fresh [nationality1, pet1, drink1, sport1, nationality2, pet2, drink2, sport2] do
           to_the_left_of(
-            [:house, nationality1, :green, pet1, beverage1, sport1],
-            [:house, nationality2, :white, pet2, beverage2, sport2],
+            [:house, nationality1, :green, pet1, drink1, sport1],
+            [:house, nationality2, :white, pet2, drink2, sport2],
             street
           )
         end
 
         # Baseball player lives next to cat owner
-        fresh [nationality1, color1, pet1, beverage1, nationality2, color2, beverage2, sport2] do
+        fresh [nationality1, color1, pet1, drink1, nationality2, color2, drink2, sport2] do
           next_to(
-            [:house, nationality1, color1, pet1, beverage1, :baseball],
-            [:house, nationality2, color2, :cats, beverage2, sport2],
+            [:house, nationality1, color1, pet1, drink1, :baseball],
+            [:house, nationality2, color2, :cats, drink2, sport2],
             street
           )
         end
 
         # Hockey player lives next to horse owner
-        fresh [nationality1, color1, pet1, beverage1, nationality2, color2, beverage2, sport2] do
+        fresh [nationality1, color1, pet1, drink1, nationality2, color2, drink2, sport2] do
           next_to(
-            [:house, nationality1, color1, pet1, beverage1, :hockey],
-            [:house, nationality2, color2, :horses, beverage2, sport2],
+            [:house, nationality1, color1, pet1, drink1, :hockey],
+            [:house, nationality2, color2, :horses, drink2, sport2],
             street
           )
         end
 
         # Norvegian lives next to blue house
-        fresh [color1, pet1, beverage1, sport1, nationality2, pet2, beverage2, sport2] do
+        fresh [color1, pet1, drink1, sport1, nationality2, pet2, drink2, sport2] do
           next_to(
-            [:house, :norvegian, color1, pet1, beverage1, sport1],
-            [:house, nationality2, :blue, pet2, beverage2, sport2],
+            [:house, :norvegian, color1, pet1, drink1, sport1],
+            [:house, nationality2, :blue, pet2, drink2, sport2],
             street
           )
         end
 
         # Somebody owns the fish
-        fresh [color, beverage, sport, nationality] do
-          membero([:house, nationality, color, :fish, beverage, sport], street)
+        fresh [color, drink, sport, nationality] do
+          membero([:house, nationality, color, :fish, drink, sport], street)
         end
 
         # Somebody drinks water
