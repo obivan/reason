@@ -234,4 +234,19 @@ defmodule ReasonTest do
                ]
              ])
   end
+
+  @tag :benchmark
+  test "zebra bench" do
+    Benchee.run(
+      %{
+        "zebra puzzle" => fn ->
+          run 10, q do
+            ZebraPuzzle.solve(q)
+          end
+        end
+      },
+      profile_after: true,
+      print: [configuration: false]
+    )
+  end
 end
