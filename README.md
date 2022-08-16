@@ -79,7 +79,7 @@ pairs of lists, which when concatenated will produce a given list:
 iex> import Reason
 
 run [x, y] do
-  appendo(x, y, [:a, :b, :c])
+  MyRelations.appendo(x, y, [:a, :b, :c])
 end
 
 # => [
