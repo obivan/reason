@@ -1,6 +1,7 @@
 defmodule Reason do
   @moduledoc """
-  First-order miniKanren for Elixir.
+  A simple functional implementation of
+  the Minikanren language in Elixir.
   """
 
   alias Reason.{Goal, Subst, Var}
