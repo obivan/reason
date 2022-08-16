@@ -313,3 +313,11 @@ end
   ]
 ]
 ```
+
+## TODOs
+
+- Relational arithmetic
+- Elixir program synthesis capabilities
+- Impure operators (like `conda`, `condu`, `project`)
+- First-order miniKanren representation
+- Time and memory limited execution
