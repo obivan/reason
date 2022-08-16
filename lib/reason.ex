@@ -12,19 +12,19 @@ defmodule Reason do
 
   Example:
 
-      iex> ast = quote do: Reason.disj(do: [g1, g2, g3])
+      iex> import Reason
+      iex> ast = quote do: disj(do: [g1, g2, g3])
       iex> ast |> Macro.expand(__ENV__) |> Macro.to_string()
       "Goal.disj(Goal.disj(g1, g2), g3)"
-
-      iex> ast = quote do: Reason.disj(do: [g1])
+      iex> ast = quote do: disj(do: [g1])
       iex> ast |> Macro.expand(__ENV__) |> Macro.to_string()
       "g1"
-
-      iex> alias Reason.{Subst, Var}
-      iex> g = Reason.disj(do: [])
-      iex> x = Var.new()
-      iex> s = Subst.put(Subst.new(), x, :olive)
-      iex> assert g.(s) == []
+      # Empty disj are always fail
+      iex> answer = run q do
+      ...>   disj(do: [])
+      ...>   conj(do: [identical(q, :olive)])
+      ...> end
+      iex> assert answer == []
 
   """
   # Enum.reduce([:g1, :g2, :g3], fn g, acc -> [acc | [g]] end)
@@ -45,19 +45,19 @@ defmodule Reason do
 
   Example:
 
-      iex> ast = quote do: Reason.conj(do: [g1, g2, g3])
+      iex> import Reason
+      iex> ast = quote do: conj(do: [g1, g2, g3])
       iex> ast |> Macro.expand(__ENV__) |> Macro.to_string()
       "Goal.conj(Goal.conj(g1, g2), g3)"
-
-      iex> ast = quote do: Reason.conj(do: [g1])
+      iex> ast = quote do: conj(do: [g1])
       iex> ast |> Macro.expand(__ENV__) |> Macro.to_string()
       "g1"
-
-      iex> alias Reason.{Subst, Var}
-      iex> g = Reason.conj(do: [])
-      iex> x = Var.new()
-      iex> s = Subst.put(Subst.new(), x, :olive)
-      iex> assert g.(s) == [%{x => :olive}]
+      # Empty conj are always succeeding
+      iex> answer = run q do
+      ...>   conj(do: [])
+      ...>   identical(q, :olive)
+      ...> end
+      iex> assert answer == [:olive]
 
   """
   defmacro conj(do: block) do
@@ -77,11 +77,21 @@ defmodule Reason do
 
   Examples:
 
-      iex> alias Reason.Goal
-      iex> Reason.fresh [x, y] do
-      ...>   Goal.identical(x, :olive)
-      ...>   Goal.identical(y, x)
+      iex> import Reason
+      iex> run q do
+      ...>   fresh [x, y] do
+      ...>     identical(x, :olive)
+      ...>     identical(y, :oil)
+      ...>     identical(q, [x, y])
+      ...>   end
       ...> end
+      [[:olive, :oil]]
+      # This can be expressed in a briefer form:
+      iex> run [x, y] do
+      ...>   identical(x, :olive)
+      ...>   identical(y, :oil)
+      ...> end
+      [[:olive, :oil]]
 
   """
   defmacro fresh(vars, do: block) do
@@ -97,13 +107,12 @@ defmodule Reason do
   @doc """
   Run goals.
 
-      iex> alias Reason.{Goal, Var}
-      iex> require Reason
-      iex> Reason.run 1, q do
-      ...>   Reason.fresh [x, y] do
-      ...>     Goal.identical(x, :olive)
-      ...>     Goal.identical(y, x)
-      ...>     Goal.identical(q, y)
+      iex> import Reason
+      iex> run 1, q do
+      ...>   fresh [x, y] do
+      ...>     identical(x, :olive)
+      ...>     identical(y, x)
+      ...>     identical(q, y)
       ...>   end
       ...> end
       [:olive]
