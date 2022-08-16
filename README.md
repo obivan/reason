@@ -10,7 +10,7 @@ dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:reason, git: "https://github.com/obivan/reason.git", tag: "0.1.0"}
+    {:reason, git: "https://github.com/obivan/reason.git", tag: "v0.1.0"}
   ]
 end
 ```
