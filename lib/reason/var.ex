@@ -62,17 +62,3 @@ defmodule Reason.Var do
   def new_many([]), do: []
   def new_many([h | t]), do: [new(h) | new_many(t)]
 end
-
-defimpl String.Chars, for: Var do
-  alias Reason.Var
-
-  def to_string(%Var{sym: nil, id: id}), do: "var_#{inspect(id)}"
-  def to_string(%Var{sym: s, id: _}), do: "#{s}"
-end
-
-defimpl Inspect, for: Var do
-  alias Reason.Var
-
-  def inspect(%Var{sym: nil, id: id}, _opts), do: "var_#{inspect(id)}"
-  def inspect(%Var{sym: s, id: id}, _opts), do: "#{s}(#{inspect(id)})"
-end
