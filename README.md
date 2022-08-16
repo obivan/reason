@@ -20,7 +20,7 @@ by running `mix docs`.
 
 ## Usage
 
-Only the `Reason` module needs to be imported by the library client.
+Only the `Reason` module needs to be imported by the client code.
 All other modules contain private implementation details.
 
 ## miniKanren
