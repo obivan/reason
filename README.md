@@ -38,7 +38,7 @@ For example, let's suppose we have an `append` function that takes two
 lists as arguments, adds the contents of the second list to the end of
 the first list, and returns the resulting concatenated list.
 
-Let's define an appendo relation that will relate the arguments and
+Let's define an `appendo` relation that will relate the arguments and
 the result. Relations are defined by using the macro `defrel`:
 
 ```elixir
@@ -60,7 +60,7 @@ defmodule MyRelations do
 end
 ```
 
-We can use the relation in the same way as the append function - to concatenate lists.
+We can use the relation in the same way as the `append` function - to concatenate lists.
 
 ```elixir
 iex> import Reason
@@ -72,7 +72,7 @@ end
 # => [[1, 2, :a, :b, :c]]
 ```
 
-But you can also use a relation to, for example, generate all possible
+But we can also use a relation to, for example, generate all possible
 pairs of lists, which when concatenated will produce a given list:
 
 ```elixir
@@ -317,7 +317,7 @@ end
 ## TODOs
 
 - Relational arithmetic
-- Elixir program synthesis capabilities
+- Elixir program synthesis capabilities (`evalo`, quines generation)
 - Impure operators (like `conda`, `condu`, `project`)
 - First-order miniKanren representation
 - Time and memory limited execution
