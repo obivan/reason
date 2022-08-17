@@ -90,6 +90,18 @@ end
 ]
 ```
 
+Or we can use `appendo` to infer the list `x` that, when prepended to the list [:d, :e], produces [:a, :b, :c, :d, :e]:
+
+```elixir
+iex> import Reason
+
+run x do
+  MyRelations.appendo(x, [:d, :e], [:a, :b, :c, :d, :e])
+end
+
+# => [[:a, :b, :c]]
+```
+
 For further reading, see http://minikanren.org
 
 Now let's look at the solution to one of the
